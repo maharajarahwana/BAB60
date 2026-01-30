@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>BAB60</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>BAB1</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Latihan Kosakata</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .card {
+    background: white;
+    padding: 30px;
+    width: 400px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  input {
+    width: 90%;
+    padding: 8px;
+    margin-top: 15px;
+  }
+  button {
+    margin-top: 20px;
+    padding: 8px 15px;
+    cursor: pointer;
+  }
+  .result {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .wrong { color: red; }
+  .correct { color: green; }
+  ol { text-align:left; max-height:400px; overflow:auto; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2 id="question"></h2>
+  <input type="text" id="answerInput" placeholder="Tulis jawaban di sini">
+  <br>
+  <button id="nextBtn">Selanjutnya</button>
+</div>
+
+<script>
+let questions = [
+{ soal: "근로자 보험", jawaban: "asuransi pekerja" },
+{ soal: "는 바람에", jawaban: "karena" },
+{ soal: "상해 보험", jawaban: "asuransi kecelakaan" },
+{ soal: "걱정하다", jawaban: "khawatir" },
+{ soal: "불길하다", jawaban: "tidak beruntung / pertanda buruk" },
+{ soal: "산재 보험", jawaban: "asuransi kecelakaan kerja" },
+{ soal: "질병", jawaban: "penyakit" },
+{ soal: "병원 진단서", jawaban: "surat keterangan medis" },
+{ soal: "상해", jawaban: "cedera" },
+{ soal: "보험에 가입하다", jawaban: "mendaftar asuransi" },
+{ soal: "사망", jawaban: "meninggal" },
+{ soal: "보험료를 내다", jawaban: "membayar asuransi" },
+{ soal: "납입하다", jawaban: "menyetor / membayar" },
+{ soal: "재해", jawaban: "kecelakaan / bencana" },
+{ soal: "보험금을 청구하다", jawaban: "mengklaim uang asuransi" },
+{ soal: "장해", jawaban: "cacat" },
+{ soal: "지급 심사를 받다", jawaban: "menerima pemeriksaan pembayaran" },
+{ soal: "체불 임금", jawaban: "penunggakan gaji" },
+{ soal: "보험금을 받다", jawaban: "menerima uang asuransi" },
+{ soal: "보험금을 타다", jawaban: "mendapatkan uang asuransi" },
+{ soal: "퇴직금", jawaban: "pesangon" },
+{ soal: "휴업 급여", jawaban: "gaji selama tidak bekerja" },
+{ soal: "벌금", jawaban: "denda" },
+{ soal: "범칙금", jawaban: "denda pelanggaran" },
+{ soal: "장해 보상금", jawaban: "kompensasi cacat" },
+{ soal: "출국만기보험", jawaban: "asuransi pulang setelah kontrak selesai" },
+{ soal: "4대 사회보험", jawaban: "empat asuransi sosial" },
+{ soal: "임금체불보증 보험", jawaban: "asuransi jaminan tunggakan gaji" },
+{ soal: "국민연금", jawaban: "pensiun nasional" },
+{ soal: "귀국비용 보험", jawaban: "asuransi biaya kepulangan" },
+{ soal: "고용 보험", jawaban: "asuransi ketenagakerjaan" },
+{ soal: "일시금", jawaban: "pembayaran sekaligus" },
+{ soal: "건강보험", jawaban: "asuransi kesehatan" },
+{ soal: "진단서", jawaban: "surat keterangan medis" },
+{ soal: "입증", jawaban: "bukti / pembuktian" },
+{ soal: "보험 약관", jawaban: "perjanjian / ketentuan asuransi" },
+{ soal: "의료비", jawaban: "biaya medis" },
+{ soal: "부담 없다", jawaban: "tidak ada beban" },
+{ soal: "누구나", jawaban: "siapa pun" },
+{ soal: "체결하다", jawaban: "menandatangani / mengikat perjanjian" },
+{ soal: "혜택", jawaban: "manfaat" },
+{ soal: "사고 입증 서류", jawaban: "dokumen bukti kecelakaan" },
+{ soal: "병원비", jawaban: "biaya rumah sakit" },
+{ soal: "출국예정사실 확인서", jawaban: "surat konfirmasi rencana kepulangan" },
+{ soal: "사업주", jawaban: "pengusaha / pemberi kerja" },
+{ soal: "부상", jawaban: "cedera" },
+{ soal: "체하다", jawaban: "berpura-pura" },
+{ soal: "실직", jawaban: "pengangguran / kehilangan pekerjaan" },
+{ soal: "입원하다", jawaban: "dirawat / opname" },
+{ soal: "지급", jawaban: "pembayaran" },
+{ soal: "퇴원하다", jawaban: "keluar dari rumah sakit" }
+];
+
+// Acak soal
+questions = questions.sort(() => Math.random() - 0.5);
+
+let index = 0;
+let score = 0;
+let userAnswers = [];
+
+const questionEl = document.getElementById("question");
+const answerInput = document.getElementById("answerInput");
+const nextBtn = document.getElementById("nextBtn");
+const card = document.querySelector(".card");
+
+function showQuestion() {
+  questionEl.textContent = "Soal " + (index + 1) + ": " + questions[index].soal;
+  answerInput.value = "";
+  answerInput.focus();
+}
+
+nextBtn.addEventListener("click", () => {
+  const userAnswer = answerInput.value.trim().toLowerCase();
+  userAnswers[index] = userAnswer; // simpan jawaban sesuai index
+
+  if (userAnswer === questions[index].jawaban) {
+    score++;
+  }
+
+  index++;
+  if (index < questions.length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
+});
+
+function showResult() {
+  let answerList = "";
+  questions.forEach((q, i) => {
+    if (userAnswers[i] === q.jawaban) {
+      answerList += `<li>${q.soal} = <span class="correct">${q.jawaban}</span></li>`;
+    } else {
+      answerList += `<li>${q.soal} = <span class="correct">${q.jawaban}</span><br>
+                     Jawaban kamu: <span class="wrong">${userAnswers[i] || "(kosong)"}</span></li>`;
+    }
+  });
+
+  card.innerHTML = `
+    <h2>Hasil</h2>
+    <p class="result">Nilai: ${score} / ${questions.length}</p>
+    <hr>
+    <p>Kunci Jawaban:</p>
+    <ol>${answerList}</ol>
+  `;
+}
+
+showQuestion();
+</script>
+
+</body>
+</html>
+    
+  </body>
+  
+</html>
